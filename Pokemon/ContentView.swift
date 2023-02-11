@@ -8,23 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
-    let columns = [
+    private let columns = [
         GridItem(.flexible(), spacing: 10),
         GridItem(.flexible(), spacing: 10)
     ]
-    let data = (1...100).map { "Item \($0)" }
+
+    private var viewModel = ContentViewModel(networkService: NetworkService())
 
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(data, id: \.self) { item in
+                ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
                     ZStack {
                         RoundedRectangle(cornerRadius: 25)
                             .fill(.yellow)
                             .frame(height: 150)
                         VStack {
                             Image(systemName: "safari")
-                            Text(item)
+                            Text(pokemon.name)
                         }
                     }
                 }
