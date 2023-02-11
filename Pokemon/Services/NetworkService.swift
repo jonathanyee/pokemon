@@ -33,6 +33,19 @@ class NetworkService {
         }
     }
 
+    func pokemon(by id: Int) async -> Result<PokemonDetail, RequestError> {
+        var url = components.url
+        url = url?.appending(path: "pokemon")
+        url = url?.appending(path: String(id))
+
+        if let url = url {
+            print(url)
+            return await request(url: url, model: PokemonDetail.self)
+        } else {
+            return .failure(.invalidURL)
+        }
+    }
+
     private func request<T>(url: URL, model: T.Type) async -> Result<T, RequestError> where T: Decodable {
         let request = URLRequest(url: url)
         do {

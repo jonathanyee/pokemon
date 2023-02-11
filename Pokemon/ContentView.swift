@@ -32,6 +32,10 @@ struct ContentView: View {
             }
             .padding()
         }
+        .task {
+            let one = await NetworkService().pokemon(by: 1)
+            print(one)
+        }
     }
 }
 
