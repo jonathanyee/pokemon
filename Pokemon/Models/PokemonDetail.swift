@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct PokemonDetail: Codable {
     let height: Int
@@ -26,5 +27,33 @@ struct PokemonDetail: Codable {
         case stats
         case types
         case weight
+    }
+
+    func background() -> Color {
+        if let type = types.first {
+            switch type.type.name {
+                case "grass":
+                    return .green
+                case "fire":
+                    return .red
+                case "water":
+                    return .blue
+                case "electric":
+                    return .yellow
+                case "poison":
+                    return .purple
+                default:
+                    return .gray
+            }
+        }
+        return .gray
+    }
+
+    func typesForDisplay() -> String {
+        var result = [String]()
+        for type in types {
+            result.append(type.type.name)
+        }
+        return result.joined(separator: ",")
     }
 }

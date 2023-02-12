@@ -13,28 +13,31 @@ struct ContentView: View {
         GridItem(.flexible(), spacing: 10)
     ]
 
-    private var viewModel = ContentViewModel(networkService: NetworkService())
+    @Environment(\.pokedex) var pokdex: Pokedex
+    private let networkService: NetworkService
+    private var viewModel: ContentViewModel
+
+    init() {
+        networkService = NetworkService()
+        viewModel = ContentViewModel(networkService: networkService)
+    }
 
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 10) {
                 ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 25)
-                            .fill(.yellow)
-                            .frame(height: 150)
-                        VStack {
-                            Image(systemName: "safari")
-                            Text(pokemon.name)
-                        }
+                    if let id = pokemon.id {
+                        PokemonGridItemView(
+                            viewModel: .init(
+                                pokedex: pokdex,
+                                networkService: networkService,
+                                id: id
+                            )
+                        )
                     }
                 }
             }
             .padding()
-        }
-        .task {
-            let one = await NetworkService().pokemon(by: 1)
-            print(one)
         }
     }
 }
