@@ -13,32 +13,43 @@ struct ContentView: View {
         GridItem(.flexible(), spacing: 10)
     ]
 
-    @Environment(\.pokedex) var pokdex: Pokedex
+    private let pokedex: Pokedex
     private let networkService: NetworkService
     private var viewModel: ContentViewModel
 
     init() {
+        pokedex = Pokedex()
         networkService = NetworkService()
         viewModel = ContentViewModel(networkService: networkService)
     }
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
-                    if let id = pokemon.id {
-                        PokemonGridItemView(
-                            viewModel: .init(
-                                pokedex: pokdex,
-                                networkService: networkService,
-                                id: id
-                            )
-                        )
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 10) {
+                    ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
+                        if let id = pokemon.id {
+                            NavigationLink(destination: {
+                                PokemonDetailView(pokedex: pokedex, id: id)
+                            }, label: {
+                                PokemonGridItemView(
+                                    viewModel: .init(
+                                        pokedex: pokedex,
+                                        networkService: networkService,
+                                        id: id
+                                    )
+                                )
+                            })
+                        }
                     }
                 }
+                .padding()
             }
-            .padding()
+//            .navigationDestination(for: PokemonDetail.self) { detail in
+//                PokemonDetailView(pokemon: detail)
+//            }
         }
+
     }
 }
 

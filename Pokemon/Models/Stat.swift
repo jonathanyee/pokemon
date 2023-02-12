@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Stat: Codable {
+struct Stat: Codable, Hashable {
     let baseStat: Int
     let effort: Int
     let stat: Species

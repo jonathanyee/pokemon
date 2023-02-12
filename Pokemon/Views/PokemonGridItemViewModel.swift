@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 class PokemonGridItemViewModel: ObservableObject {
-    private let networkService: NetworkService
     private let pokedex: Pokedex
+    private let networkService: NetworkService
     private let id: Int
 
     private var task: Task<Void, Never>?
@@ -31,8 +31,9 @@ class PokemonGridItemViewModel: ObservableObject {
                 let result = await networkService.pokemon(by: id)
                 switch result {
                     case .success(let detail):
-                        Task { @MainActor in
-                            self.detail = detail
+                        Task { @MainActor [weak self] in
+                            self?.detail = detail
+                            self?.pokedex.cache[id] = detail
                         }
                     case .failure(let error):
                         print(error)

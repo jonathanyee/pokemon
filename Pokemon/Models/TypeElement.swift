@@ -7,7 +7,16 @@
 
 import Foundation
 
-struct TypeElement: Codable {
+struct TypeElement: Codable, Hashable, Equatable {
+    static func == (lhs: TypeElement, rhs: TypeElement) -> Bool {
+        lhs.slot == rhs.slot &&
+        lhs.type == rhs.type
+    }
+
     let slot: Int
     let type: Species
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(type)
+    }
 }

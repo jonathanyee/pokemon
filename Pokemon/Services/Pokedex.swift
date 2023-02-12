@@ -8,17 +8,6 @@
 import Foundation
 import SwiftUI
 
-struct Pokedex {
-    let cache = [Int: PokemonDetail]()
-}
-
-struct PokedexKey: EnvironmentKey {
-    static let defaultValue = Pokedex()
-}
-
-extension EnvironmentValues {
-    var pokedex: Pokedex {
-        get { self[PokedexKey.self] }
-        set { self[PokedexKey.self] = newValue }
-    }
+class Pokedex {
+    var cache = [Int: PokemonDetail]()
 }

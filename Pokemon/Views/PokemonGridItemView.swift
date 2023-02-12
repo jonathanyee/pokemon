@@ -18,14 +18,13 @@ struct PokemonGridItemView: View {
         ZStack {
             if let detail = viewModel.detail {
                 RoundedRectangle(cornerRadius: 25)
-                    .fill(detail.background())
+                    .fill(detail.background().opacity(0.5))
                     .frame(height: 250)
                 VStack {
                     AsyncImage(url: URL(string: detail.sprites.frontDefault))
                     Text("ID: \(detail.id)")
                     Text(detail.name)
                     Text(detail.typesForDisplay())
-
                 }
             }
         }.onAppear {
