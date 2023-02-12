@@ -27,7 +27,7 @@ struct ContentView: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(viewModel.searchResults, id: \.self) { pokemon in
+                    ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
                         if let id = pokemon.id {
                             NavigationLink(destination: {
                                 PokemonDetailView(pokedex: pokedex, id: id)
@@ -39,6 +39,9 @@ struct ContentView: View {
                                         id: id
                                     )
                                 )
+                                .onAppear {
+                                    viewModel.loadNextPage(id: id)
+                                }
                             })
                         }
                     }

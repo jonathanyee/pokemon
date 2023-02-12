@@ -22,8 +22,11 @@ class NetworkService {
     func listOfPokemon(limit: Int = 20, offset: Int = 0) async -> Result<Pagination, RequestError> {
         var urlComponents = components
         urlComponents.path.append("pokemon")
-        urlComponents.queryItems?.append(URLQueryItem(name: "limit", value: String(limit)))
-        urlComponents.queryItems?.append(URLQueryItem(name: "offset", value: String(offset)))
+
+        urlComponents.queryItems = [
+            URLQueryItem(name: "limit", value: String(limit)),
+            URLQueryItem(name: "offset", value: String(offset))
+        ]
 
         if let url = urlComponents.url {
             print(url)

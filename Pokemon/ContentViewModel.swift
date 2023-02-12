@@ -11,9 +11,10 @@ import SwiftUI
 class ContentViewModel: ObservableObject {
     private let networkService: NetworkService
 
-    private var listOfPokemon = [Pokemon]()
+    @Published var listOfPokemon = [Pokemon]()
     private let pokedex: Pokedex
     @Published var text = ""
+    private var loadingNextPage = false
 
     init(networkService: NetworkService, pokedex: Pokedex) {
         self.networkService = networkService
@@ -25,7 +26,9 @@ class ContentViewModel: ObservableObject {
             let result = await self.networkService.listOfPokemon()
             switch result {
                 case .success(let pagination):
-                    self.listOfPokemon = pagination.results
+                    Task { @MainActor in
+                        self.listOfPokemon = pagination.results
+                    }
                 case .failure(let error):
                     print(error)
             }
@@ -47,6 +50,29 @@ class ContentViewModel: ObservableObject {
                 }
             }
             return result
+        }
+    }
+
+    func loadNextPage(id: Int) {
+        if !loadingNextPage && id + 10 > listOfPokemon.count {
+            print("loading next oage at \(id)")
+            loadingNextPage = true
+
+            Task { [weak self] in
+                guard let self = self else { return }
+
+                let result = await self.networkService.listOfPokemon(offset: listOfPokemon.count)
+                switch result {
+                    case .success(let pagination):
+                        Task { @MainActor in
+                            self.loadingNextPage = false
+                            self.listOfPokemon.append(contentsOf: pagination.results)
+                        }
+                    case .failure(let error):
+                        print(error)
+                        self.loadingNextPage = false
+                }
+            }
         }
     }
 }
