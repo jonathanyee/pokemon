@@ -27,22 +27,43 @@ struct ContentView: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
-                        if let id = pokemon.id {
-                            NavigationLink(destination: {
-                                PokemonDetailView(pokedex: pokedex, id: id)
-                            }, label: {
-                                PokemonGridItemView(
-                                    viewModel: .init(
-                                        pokedex: pokedex,
-                                        networkService: networkService,
-                                        id: id
+                    if viewModel.text.isEmpty == false {
+                        ForEach(viewModel.searchResults, id: \.self) { pokemon in
+                            if let id = pokemon.id {
+                                NavigationLink(destination: {
+                                    PokemonDetailView(pokedex: pokedex, id: id)
+                                }, label: {
+                                    PokemonGridItemView(
+                                        viewModel: .init(
+                                            pokedex: pokedex,
+                                            networkService: networkService,
+                                            id: id
+                                        )
                                     )
-                                )
-                                .onAppear {
-                                    viewModel.loadNextPage(id: id)
-                                }
-                            })
+                                    .onAppear {
+                                        viewModel.loadNextPage(id: id)
+                                    }
+                                })
+                            }
+                        }
+                    } else {
+                        ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
+                            if let id = pokemon.id {
+                                NavigationLink(destination: {
+                                    PokemonDetailView(pokedex: pokedex, id: id)
+                                }, label: {
+                                    PokemonGridItemView(
+                                        viewModel: .init(
+                                            pokedex: pokedex,
+                                            networkService: networkService,
+                                            id: id
+                                        )
+                                    )
+                                    .onAppear {
+                                        viewModel.loadNextPage(id: id)
+                                    }
+                                })
+                            }
                         }
                     }
                 }
