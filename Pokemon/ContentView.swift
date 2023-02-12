@@ -15,19 +15,19 @@ struct ContentView: View {
 
     private let pokedex: Pokedex
     private let networkService: NetworkService
-    private var viewModel: ContentViewModel
+    @ObservedObject var viewModel: ContentViewModel
 
     init() {
         pokedex = Pokedex()
         networkService = NetworkService()
-        viewModel = ContentViewModel(networkService: networkService)
+        viewModel = ContentViewModel(networkService: networkService, pokedex: pokedex)
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(viewModel.listOfPokemon, id: \.self) { pokemon in
+                    ForEach(viewModel.searchResults, id: \.self) { pokemon in
                         if let id = pokemon.id {
                             NavigationLink(destination: {
                                 PokemonDetailView(pokedex: pokedex, id: id)
@@ -45,11 +45,8 @@ struct ContentView: View {
                 }
                 .padding()
             }
-//            .navigationDestination(for: PokemonDetail.self) { detail in
-//                PokemonDetailView(pokemon: detail)
-//            }
         }
-
+        .searchable(text: $viewModel.text, placement: .navigationBarDrawer(displayMode: .always), prompt: "Filter by type")
     }
 }
 
